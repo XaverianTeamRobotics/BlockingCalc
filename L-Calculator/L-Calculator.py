@@ -1,8 +1,11 @@
 "2024–2025 Scouting TX Calc Program"
 import time
-
+import colorama
 from math import *
 import matplotlib.pyplot as plt
+from pyasn1_modules.rfc3279 import prime192v2
+
+import progressbar_
 # IGNORE THESE VARIABLES
 # x = Total Block time
 # y = NO. of Blocks
@@ -71,50 +74,90 @@ def calcloop(depth, current, tree, r_t, r_n, r_l):
 
 
 
-def iter_calcloop(depth, calc_n, calc_l, start):
+def iter_calcloop(depth: int, calc_n: int, calc_l: float, start: int, team: int=0):
     tree = []
     txtree = []
     txtree.append(0)
-    prv = 0
+    prv = 1
+    prv1 = 1
+    prv2 = 1
+    prv3 = 1
+    prv4 = 1
+    pavg = 1
+    
     
     for i in range(120-start):
         
+        
         st1 = time.time_ns()
-        print(f"\rGenerating Tree {i}, prev: {round(prv, 2)} ms", end="")
+        #print(f"\rGenerating Tree {i}, prev: {round(prv, 2)} ms", end="")
+        if prv1 > prv:
+            pmincol = colorama.Fore.GREEN
+        elif prv1 < prv:
+            pmincol = colorama.Fore.RED
+        else:
+            pmincol = colorama.Fore.YELLOW
+            
+        pavg = round(pavg, 2)
+        
+        if pavg > 5000:
+            pavgcol = colorama.Fore.RED
+        if pavg > 1000 and pavg < 4999:
+            pavgcol = colorama.Fore.LIGHTRED_EX
+        if pavg > 500 and pavg < 999:
+            pavgcol = colorama.Fore.YELLOW
+        if pavg > 100 and pavg < 499:
+            pavgcol = colorama.Fore.GREEN
+        if pavg > 0 and pavg < 99:
+            pavgcol = colorama.Fore.BLUE
+        progressbar_.bar(i, 120-start, length=15, fill="#", prefix=f"{colorama.Fore.LIGHTWHITE_EX}Generating {120-start} Trees @ T{team}", suffix=f"{colorama.Fore.LIGHTWHITE_EX}| Tree{i} | Tree Prev Gen Tx: {pmincol}{prv}{colorama.Fore.LIGHTWHITE_EX} | Avg: {pavgcol}{pavg}")
         subtree=[]
         
         calcloop(depth, 0, subtree, i, calc_n, calc_l)
         tree.append([f"tree{i}", subtree])
         txtree.append(i)
+        prv4 = prv3
+        
+        prv3 = prv2
+        
+        prv2 = prv1
+        
+        prv1 = prv
+        
+
         prv = time.time_ns() - st1
         prv = prv/1000000
+        prv = round(prv, 2)
         
-    print(tree)
+        pavg = (prv + prv1 + prv2 + prv3 + prv4)/5
+        
+    #print(tree)
+    print("\n")
     
-    print("\nCalculation Complete")
+    #print("\nCalculation Complete")
     return tree, txtree
 
     
 
 
 
-def find_best(depth, t, n, l, plt, col):
+def find_best(depth, t, n, l, plt, col, team):
     # this func is incomplete
     plotlist = [0]
     txtree=[0]
-    valuetree, timetree = iter_calcloop(depth, n, l, t)
+    valuetree, timetree = iter_calcloop(depth, n, l, t, team)
     for list in valuetree:
         avgvar = 0
         for list_2 in list[1][0]:
             avgvar += list_2
         
         plotlist.append(list[1][0][0])
-        print(avgvar)
+       #print(avgvar)
     pass
     txtree.append(timetree)
     plt.plot(timetree, plotlist, col)
     
-    print("")
+    
     #print(timetree)
 
 #c_t = int(input("c: "))6
@@ -125,12 +168,12 @@ def find_best(depth, t, n, l, plt, col):
 #with open("outputs.txt", "w") as _f_e_2:
 #    _f_e_2.write(str(iter_calcloop(10, 6, 0.5, 0)))
 
-def findTeams(depth, t1_n, t1_l, t2_n, t2_l, t3_n, t3_l, t4_n, t4_l):
+def findTeams(depth, t1_n, t1_l, t2_n, t2_l, t3_n, t3_l, t4_n, t4_l, start):
     
-    find_best(depth, 0, t1_n, t1_l, plt, "g")
-    find_best(depth, 0, t2_n, t2_l, plt, "b")
-    find_best(depth, 0, t3_n, t3_l, plt, "r")
-    find_best(depth, 0, t4_n, t4_l, plt, "y")
+    find_best(depth, start, t1_n, t1_l, plt, "g", 1)
+    find_best(depth, start, t2_n, t2_l, plt, "b", 2)
+    find_best(depth, start, t3_n, t3_l, plt, "r", 3)
+    find_best(depth, start, t4_n, t4_l, plt, "y", 4)
     
     #plt.axes.Axes.axhline()
     
@@ -148,4 +191,4 @@ t4n = float(input("Team 4 n: "))
 t4l = float(input("Team 4 l: "))
 cdepth = int(input("Tree Calculation Depth: "))
 
-findTeams(cdepth, t1n, t1l, t2n, t2l, t3n, t3l, t4n, t4l)
+findTeams(cdepth, t1n, t1l, t2n, t2l, t3n, t3l, t4n, t4l, 0)
