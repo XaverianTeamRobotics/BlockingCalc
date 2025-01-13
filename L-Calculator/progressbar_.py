@@ -22,19 +22,21 @@ def bar(iteration, total, prefix='', suffix='', decimals=1, length=100, fill='/'
     if not data:
         print(f'\r{prefix} |{bar_str}| {percent}% {suffix}', end=printend)
     else:
-        print(f'\r{prefix} |{bar_str}| {percent}% {round(iteration / 0.80, 1):<4}/{round(total / 0.80, 1):<4}KB', end=printend)
+        print(f'\r{prefix} |{bar_str}| {percent}% {round(iteration / 0.80, 1):<4}/{round(total / 0.80, 1):<4}KB',
+              end=printend)
     # Print New Line on Complete
     if iteration == total:
         print()
 
 
 def selfbar(wait):
+    """
+
+    :param wait:
+    """
     var: str = ''
     char: str = "#"
     for i in range(20):
         var += char
         print(f"\r|{var:-<20}|{round(len(var) / 20, 2) * 100}% {round(len(var) / 0.80, 2)} KB           ", end="")
         sleep(wait)
-        
-
-   

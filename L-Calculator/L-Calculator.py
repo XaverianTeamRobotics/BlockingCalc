@@ -1,13 +1,11 @@
 """2024–2025 Scouting TX Calc Program"""
 import time
-
-
-import colorama
-from math import *
+from math import pi, sin
 import matplotlib.pyplot as plt
-
-
+import colorama
 import progressbar_
+
+
 # IGNORE THESE VARIABLES
 # x = Total Block time
 # y = NO. of Blocks
@@ -43,27 +41,40 @@ import progressbar_
 # Equations
 
 def u(t, n, l, isblocked):
-    if not isblocked:
-        output_calculated = 1 * sin((pi/n)*t + l)
-        
-    elif isblocked:
-        output_calculated = sin((pi/n)*t)
+    """
 
+    :param t:
+    :param n:
+    :param l:
+    :param isblocked:
+    :return:
+    """
+    global output_calculated
+    if not isblocked:
+        output_calculated = 1 * sin((pi / n) * t + l)
+    
+    elif isblocked:
+        output_calculated = sin((pi / n) * t)
+    
     return output_calculated
 
 
-
-
 def calcloop(depth, current, tree, r_t, r_n, r_l):
-    
+    """
 
+    :param depth:
+    :param current:
+    :param tree:
+    :param r_t:
+    :param r_n:
+    :param r_l:
+    """
     if current <= depth:
         tree_true = u(r_t, r_n, r_l, True)
         
         tree.append([tree_true, current, True])
         calcloop(depth, current + 1, tree, r_t, r_n, r_l)
-    
-    
+        
         tree_false = u(r_t, r_n, r_l, False)
         
         tree.append([tree_false, current, False])
@@ -75,8 +86,17 @@ def calcloop(depth, current, tree, r_t, r_n, r_l):
         pass
 
 
+def iter_calcloop(depth: int, calc_n: int, calc_l: float, start: int, team: int = 0):
+    """
 
-def iter_calcloop(depth: int, calc_n: int, calc_l: float, start: int, team: int=0):
+    :param depth:
+    :param calc_n:
+    :param calc_l:
+    :param start:
+    :param team:
+    :return:
+    """
+    global pavgcol
     tree = []
     txtree = [0]
     prv = 1
@@ -85,9 +105,7 @@ def iter_calcloop(depth: int, calc_n: int, calc_l: float, start: int, team: int=
     prv3 = 1
     pavg = 1
     
-    
-    for i in range(120-start):
-        
+    for i in range(120 - start):
         
         st1 = time.time_ns()
         #print(f"\rGenerating Tree {i}, prev: {round(prv, 2)} ms", end="")
@@ -97,7 +115,7 @@ def iter_calcloop(depth: int, calc_n: int, calc_l: float, start: int, team: int=
             pmincol = colorama.Fore.RED
         else:
             pmincol = colorama.Fore.YELLOW
-            
+        
         pavg = round(pavg, 2)
         
         if pavg > 5000:
@@ -110,11 +128,13 @@ def iter_calcloop(depth: int, calc_n: int, calc_l: float, start: int, team: int=
             pavgcol = colorama.Fore.GREEN
         if 0 < pavg < 99:
             pavgcol = colorama.Fore.BLUE
-        progressbar_.bar(i, 120-start, length=15, fill="#",
-                         prefix=f"{colorama.Fore.LIGHTWHITE_EX}Generating {120-start} Trees @ T{team}",
+        progressbar_.bar(i, 120 - start, length=15, fill="#",
+                         prefix=f"{colorama.Fore.LIGHTWHITE_EX}Generating "
+                                f"{120 - start} Trees @ T{team}",
                          suffix=f"{colorama.Fore.LIGHTWHITE_EX}| Tree{i} | "
-                                f"Tree Prev Gen Tx: {pmincol}{prv}{colorama.Fore.LIGHTWHITE_EX} | Avg: {pavgcol}{pavg}")
-        subtree=[]
+                                f"Tree Prev Gen Tx: {pmincol}{prv}"
+                                f"{colorama.Fore.LIGHTWHITE_EX} | Avg: {pavgcol}{pavg}")
+        subtree = []
         
         calcloop(depth, 0, subtree, i, calc_n, calc_l)
         tree.append([f"tree{i}", subtree])
@@ -127,27 +147,33 @@ def iter_calcloop(depth: int, calc_n: int, calc_l: float, start: int, team: int=
         
         prv1 = prv
         
-
         prv = time.time_ns() - st1
-        prv = prv/1000000
+        prv /= 1000000
         prv = round(prv, 2)
         
-        pavg = (prv + prv1 + prv2 + prv3 + prv4)/5
-        
+        pavg = (prv + prv1 + prv2 + prv3 + prv4) / 5
+    
     #print(tree)
     print("\n")
     
     #print("\nCalculation Complete")
     return tree, txtree
 
-    
-
-
 
 def find_best(depth, t, n, l, plot, col, team):
+    """
+
+    :param depth:
+    :param t:
+    :param n:
+    :param l:
+    :param plot:
+    :param col:
+    :param team:
+    """
     # this func is incomplete
     plotlist = [0]
-    txtree=[0]
+    txtree = [0]
     valuetree, timetree = iter_calcloop(depth, n, l, t, team)
     for list in valuetree:
         avgvar = 0
@@ -155,12 +181,12 @@ def find_best(depth, t, n, l, plot, col, team):
             avgvar += list_2
         
         plotlist.append(list[1][0][0])
-       #print(avgvar)
+    #print(avgvar)
     txtree.append(timetree)
     plot.plot(timetree, plotlist, col)
     
-    
     #print(timetree)
+
 
 #c_t = int(input("c: "))6
 #c_n = int(input("n: "))
@@ -171,7 +197,19 @@ def find_best(depth, t, n, l, plot, col, team):
 #    _f_e_2.write(str(iter_calcloop(10, 6, 0.5, 0)))
 
 def find_teams(depth, t1_n, t1_l, t2_n, t2_l, t3_n, t3_l, t4_n, t4_l, start):
-    
+    """
+
+    :param depth:
+    :param t1_n:
+    :param t1_l:
+    :param t2_n:
+    :param t2_l:
+    :param t3_n:
+    :param t3_l:
+    :param t4_n:
+    :param t4_l:
+    :param start:
+    """
     find_best(depth, start, t1_n, t1_l, plt, "g", 1)
     find_best(depth, start, t2_n, t2_l, plt, "b", 2)
     find_best(depth, start, t3_n, t3_l, plt, "r", 3)
@@ -180,7 +218,6 @@ def find_teams(depth, t1_n, t1_l, t2_n, t2_l, t3_n, t3_l, t4_n, t4_l, start):
     #plt.axes.Axes.axhline()
     
     plt.show()
-
 
 
 t1n = float(input("Team 1 n: "))
