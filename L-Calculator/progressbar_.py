@@ -1,9 +1,11 @@
+"""Loading Progressbar"""
 from time import sleep
 
 from colorama import Fore
 
 
-def bar(iteration, total, prefix='', suffix='', decimals=1, length=100, fill='/', printend="", data=False):
+def bar(iteration, total, prefix='', suffix='', decimals=1,
+        length=100, fill='/', printend="", data=False):
     """
     Call in a loop to create terminal progress bar
     @params:
@@ -22,7 +24,8 @@ def bar(iteration, total, prefix='', suffix='', decimals=1, length=100, fill='/'
     if not data:
         print(f'\r{prefix} |{bar_str}| {percent}% {suffix}', end=printend)
     else:
-        print(f'\r{prefix} |{bar_str}| {percent}% {round(iteration / 0.80, 1):<4}/{round(total / 0.80, 1):<4}KB',
+        print(f'\r{prefix} |{bar_str}| {percent}% {round(iteration / 0.80, 1):<4}'
+              f'/{round(total / 0.80, 1):<4}KB',
               end=printend)
     # Print New Line on Complete
     if iteration == total:
@@ -38,5 +41,7 @@ def selfbar(wait):
     char: str = "#"
     for i in range(20):
         var += char
-        print(f"\r|{var:-<20}|{round(len(var) / 20, 2) * 100}% {round(len(var) / 0.80, 2)} KB           ", end="")
+        print(f"\r|{var:-<20}|"
+              f"{round(len(var) / 20, 2) * 100}% {round(len(var) / 0.80, 2)}"
+              f" KB           ", end="")
         sleep(wait)

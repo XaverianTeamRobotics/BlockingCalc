@@ -5,6 +5,11 @@ import matplotlib.pyplot as plt
 import colorama
 import progressbar_
 
+pavgcol: int  =  0
+output_calculated: int  =  0
+
+
+
 
 # IGNORE THESE VARIABLES
 # x = Total Block time
@@ -35,7 +40,6 @@ import progressbar_
 # b = opp2
 
 # Set all vars to zero
-# todo: add input statement
 
 
 # Equations
@@ -52,10 +56,8 @@ def u(t, n, l, isblocked):
     global output_calculated
     if not isblocked:
         output_calculated = 1 * sin((pi / n) * t + l)
-    
     elif isblocked:
         output_calculated = sin((pi / n) * t)
-    
     return output_calculated
 
 
@@ -71,17 +73,11 @@ def calcloop(depth, current, tree, r_t, r_n, r_l):
     """
     if current <= depth:
         tree_true = u(r_t, r_n, r_l, True)
-        
         tree.append([tree_true, current, True])
         calcloop(depth, current + 1, tree, r_t, r_n, r_l)
-        
         tree_false = u(r_t, r_n, r_l, False)
-        
         tree.append([tree_false, current, False])
         calcloop(depth, current + 1, tree, r_t, r_n, r_l)
-    
-    
-    
     else:
         pass
 
@@ -140,29 +136,21 @@ def iter_calcloop(depth: int, calc_n: int, calc_l: float, start: int, team: int 
         tree.append([f"tree{i}", subtree])
         txtree.append(i)
         prv4 = prv3
-        
         prv3 = prv2
-        
         prv2 = prv1
-        
         prv1 = prv
         
         prv = time.time_ns() - st1
         prv /= 1000000
         prv = round(prv, 2)
-        
         pavg = (prv + prv1 + prv2 + prv3 + prv4) / 5
-    
     #print(tree)
     print("\n")
-    
     #print("\nCalculation Complete")
     return tree, txtree
 
-
 def find_best(depth, t, n, l, plot, col, team):
     """
-
     :param depth:
     :param t:
     :param n:
@@ -175,12 +163,12 @@ def find_best(depth, t, n, l, plot, col, team):
     plotlist = [0]
     txtree = [0]
     valuetree, timetree = iter_calcloop(depth, n, l, t, team)
-    for list in valuetree:
+    for tree in valuetree:
         avgvar = 0
-        for list_2 in list[1][0]:
+        for list_2 in tree[1][0]:
             avgvar += list_2
         
-        plotlist.append(list[1][0][0])
+        plotlist.append(tree[1][0][0])
     #print(avgvar)
     txtree.append(timetree)
     plot.plot(timetree, plotlist, col)
@@ -198,7 +186,6 @@ def find_best(depth, t, n, l, plot, col, team):
 
 def find_teams(depth, t1_n, t1_l, t2_n, t2_l, t3_n, t3_l, t4_n, t4_l, start):
     """
-
     :param depth:
     :param t1_n:
     :param t1_l:
@@ -230,5 +217,4 @@ t4n = float(input("Team 4 n: "))
 t4l = float(input("Team 4 l: "))
 cdepth = int(input("Tree Calculation Depth: "))
 startpos = int(input("Start Position (including hang time): "))
-
 find_teams(cdepth, t1n, t1l, t2n, t2l, t3n, t3l, t4n, t4l, startpos)
