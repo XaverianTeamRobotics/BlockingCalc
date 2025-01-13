@@ -1,9 +1,11 @@
-"2024–2025 Scouting TX Calc Program"
+"""2024–2025 Scouting TX Calc Program"""
 import time
+
+
 import colorama
 from math import *
 import matplotlib.pyplot as plt
-from pyasn1_modules.rfc3279 import prime192v2
+
 
 import progressbar_
 # IGNORE THESE VARIABLES
@@ -40,11 +42,11 @@ import progressbar_
 
 # Equations
 
-def u(t, n, l, isBlocked):
-    if not isBlocked:
+def u(t, n, l, isblocked):
+    if not isblocked:
         output_calculated = 1 * sin((pi/n)*t + l)
         
-    elif isBlocked:
+    elif isblocked:
         output_calculated = sin((pi/n)*t)
 
     return output_calculated
@@ -76,13 +78,11 @@ def calcloop(depth, current, tree, r_t, r_n, r_l):
 
 def iter_calcloop(depth: int, calc_n: int, calc_l: float, start: int, team: int=0):
     tree = []
-    txtree = []
-    txtree.append(0)
+    txtree = [0]
     prv = 1
     prv1 = 1
     prv2 = 1
     prv3 = 1
-    prv4 = 1
     pavg = 1
     
     
@@ -102,15 +102,18 @@ def iter_calcloop(depth: int, calc_n: int, calc_l: float, start: int, team: int=
         
         if pavg > 5000:
             pavgcol = colorama.Fore.RED
-        if pavg > 1000 and pavg < 4999:
+        if 1000 < pavg < 4999:
             pavgcol = colorama.Fore.LIGHTRED_EX
-        if pavg > 500 and pavg < 999:
+        if 500 < pavg < 999:
             pavgcol = colorama.Fore.YELLOW
-        if pavg > 100 and pavg < 499:
+        if 100 < pavg < 499:
             pavgcol = colorama.Fore.GREEN
-        if pavg > 0 and pavg < 99:
+        if 0 < pavg < 99:
             pavgcol = colorama.Fore.BLUE
-        progressbar_.bar(i, 120-start, length=15, fill="#", prefix=f"{colorama.Fore.LIGHTWHITE_EX}Generating {120-start} Trees @ T{team}", suffix=f"{colorama.Fore.LIGHTWHITE_EX}| Tree{i} | Tree Prev Gen Tx: {pmincol}{prv}{colorama.Fore.LIGHTWHITE_EX} | Avg: {pavgcol}{pavg}")
+        progressbar_.bar(i, 120-start, length=15, fill="#",
+                         prefix=f"{colorama.Fore.LIGHTWHITE_EX}Generating {120-start} Trees @ T{team}",
+                         suffix=f"{colorama.Fore.LIGHTWHITE_EX}| Tree{i} | "
+                                f"Tree Prev Gen Tx: {pmincol}{prv}{colorama.Fore.LIGHTWHITE_EX} | Avg: {pavgcol}{pavg}")
         subtree=[]
         
         calcloop(depth, 0, subtree, i, calc_n, calc_l)
@@ -141,7 +144,7 @@ def iter_calcloop(depth: int, calc_n: int, calc_l: float, start: int, team: int=
 
 
 
-def find_best(depth, t, n, l, plt, col, team):
+def find_best(depth, t, n, l, plot, col, team):
     # this func is incomplete
     plotlist = [0]
     txtree=[0]
@@ -153,9 +156,8 @@ def find_best(depth, t, n, l, plt, col, team):
         
         plotlist.append(list[1][0][0])
        #print(avgvar)
-    pass
     txtree.append(timetree)
-    plt.plot(timetree, plotlist, col)
+    plot.plot(timetree, plotlist, col)
     
     
     #print(timetree)
@@ -168,7 +170,7 @@ def find_best(depth, t, n, l, plt, col, team):
 #with open("outputs.txt", "w") as _f_e_2:
 #    _f_e_2.write(str(iter_calcloop(10, 6, 0.5, 0)))
 
-def findTeams(depth, t1_n, t1_l, t2_n, t2_l, t3_n, t3_l, t4_n, t4_l, start):
+def find_teams(depth, t1_n, t1_l, t2_n, t2_l, t3_n, t3_l, t4_n, t4_l, start):
     
     find_best(depth, start, t1_n, t1_l, plt, "g", 1)
     find_best(depth, start, t2_n, t2_l, plt, "b", 2)
@@ -190,5 +192,6 @@ t3l = float(input("Team 3 l: "))
 t4n = float(input("Team 4 n: "))
 t4l = float(input("Team 4 l: "))
 cdepth = int(input("Tree Calculation Depth: "))
+startpos = int(input("Start Position (including hang time): "))
 
-findTeams(cdepth, t1n, t1l, t2n, t2l, t3n, t3l, t4n, t4l, 0)
+find_teams(cdepth, t1n, t1l, t2n, t2l, t3n, t3l, t4n, t4l, startpos)
