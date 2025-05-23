@@ -100,9 +100,7 @@ def iter_calcloop(depth: int, calc_n: int, calc_l: float, start: int, team: int 
     prv2 = 1
     prv3 = 1
     pavg = 1
-    
     for i in range(120 - start):
-        
         st1 = time.time_ns()
         #print(f"\rGenerating Tree {i}, prev: {round(prv, 2)} ms", end="")
         if prv1 > prv:
@@ -113,7 +111,6 @@ def iter_calcloop(depth: int, calc_n: int, calc_l: float, start: int, team: int 
             pmincol = colorama.Fore.YELLOW
         
         pavg = round(pavg, 2)
-        
         if pavg > 5000:
             pavgcol = colorama.Fore.RED
         if 1000 < pavg < 4999:
